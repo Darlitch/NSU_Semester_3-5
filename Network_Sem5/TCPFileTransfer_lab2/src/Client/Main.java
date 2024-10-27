@@ -1,9 +1,8 @@
 package Client;
 
-import Exceptions.AddressExceptions;
-
 public class Main {
-    public static void main(String[] args) throws AddressExceptions {
+    public static void main(String[] args) {
         FTClient ftclient = new FTClient(args);
+        ftclient.fileTransfer();
     }
 }

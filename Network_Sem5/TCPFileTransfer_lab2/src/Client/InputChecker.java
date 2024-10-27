@@ -1,9 +1,7 @@
 package Client;
 
-import Exceptions.AddressExceptions;
 import Exceptions.InputException;
 
-import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
@@ -16,7 +14,7 @@ import java.nio.charset.StandardCharsets;
 public final class InputChecker {
 
     private InputChecker() {};
-    public static void check(String[] args) throws AddressExceptions {
+    public static void check(String[] args) {
         if (args.length != 3) {
             throw new InputException("Need 3 parametrs: filepath, server-address, port");
         }
@@ -54,11 +52,11 @@ public final class InputChecker {
 //        }
     }
 
-    private static void addrCheck(String addrStr) throws AddressExceptions {
+    private static void addrCheck(String addrStr) {
         try {
             InetAddress addr = InetAddress.getByName(addrStr);
         } catch (UnknownHostException e) {
-            throw new AddressExceptions("IP address is incorrect");
+            throw new InputException("IP address is incorrect");
         }
     }
 
