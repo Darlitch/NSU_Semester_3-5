@@ -10,6 +10,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetDecoder;
 import java.nio.charset.CoderResult;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 
 public final class InputChecker {
 
@@ -18,7 +19,8 @@ public final class InputChecker {
         if (args.length != 3) {
             throw new InputException("Need 3 parametrs: filepath, server-address, port");
         }
-        filepathCheck(args[0]);
+        String filename = Path.of(args[0]).getFileName().toString();
+        filepathCheck(filename);
         addrCheck(args[1]);
         portCheck(args[2]);
     }
