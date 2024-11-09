@@ -15,18 +15,19 @@ void *mythread(void *arg) {
 }
 
 void *myfunc(void *arg) {
-    // printf("Hello from MyFunc [%d %d %d]\n", getpid(), getppid(), gettid());
-    // printf("-Thread ID[] = %ld\n", pthread_self());
+    printf("Hello from MyFunc [%d %d %d]\n", getpid(), getppid(), gettid());
+    printf("-Thread ID[] = %ld\n", pthread_self());
     int localus = 1;
     int static statLocal = -2;
     int const constLocalus = -1;
     localus++;
     GLOBUS++;
-    // printf("localus: %d\n", localus);
-    // printf("GLOBUS: %d\n", GLOBUS);
-    // sleep(20);
+    printf("localus: %d\n", localus);
+    printf("GLOBUS: %d\n", GLOBUS);
+    sleep(20);
     printf("%p %p %p %p\n", &localus, &statLocal, &constLocalus, &GLOBUS);
-    // sleep(200);
+    // printf("123\n");
+    sleep(200);
     return NULL;
 }
 
@@ -36,6 +37,7 @@ int main() {
     // int localus = 1;
 
     printf("main [%d %d %d]: Hello from main!\n", getpid(), getppid(), gettid());
+    printf("lalala\n");
     err[0] = pthread_create(&tid[0], NULL, mythread, NULL);
     if (err[0]) {
         printf("main: pthread_create() failed: %s\n", strerror(err[0]));
@@ -51,9 +53,10 @@ int main() {
     // int localus = 1;
     // err=1;
     for (size_t i = 0; i < 6; ++i) {
-        // printf("Thread ID[%lu] in main = %ld\n", i, tid[i]);
+        printf("Thread ID[%lu] in main = %ld\n", i, tid[i]);
         pthread_join(tid[i], NULL);
     }
+    printf("lalalaend");
     // sleep(200);
     return 0;
 }
