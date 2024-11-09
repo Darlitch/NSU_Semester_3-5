@@ -21,9 +21,8 @@ void* threadNoSignal(void* arg) {
 void* threadSIGINT(void* arg) {
     __sigset_t set;
     sigfillset(&set);
-    // sigaddset(&set, SIGINT);
-    // sigdelset(&set, SIGINT);
-    // pthread_sigmask(0, &set, NULL);
+    sigdelset(&set, SIGINT);
+    pthread_sigmask(0, &set, NULL);
     signal(SIGINT, sigintHandler);
     sleep(10);
     return NULL;
@@ -34,7 +33,6 @@ void* threadSIGQUIT(void* arg) {
     int sig;
     sigemptyset(&set);
     sigaddset(&set, SIGQUIT);
-    // pthread_sigmask(0, &set, NULL);
     while (1) {
         sigwait(&set, &sig);
         if (sig == SIGQUIT) {
@@ -47,9 +45,7 @@ void* threadSIGQUIT(void* arg) {
 int main() {
     printf("%d\n", getpid());
     __sigset_t set;
-    // sigfillset(&set);
     sigemptyset(&set);
-    // sigaddset(&set, SIGINT);
     sigaddset(&set, SIGQUIT);
     pthread_sigmask(0, &set, NULL);
     pthread_t tid[3];
@@ -57,8 +53,6 @@ int main() {
     pthread_create(&tid[1], NULL, threadSIGINT, NULL);
     pthread_create(&tid[2], NULL, threadSIGQUIT, NULL);
     sleep(5);
-    // pthread_kill(tid[1], SIGINT);
-    // pthread_kill(tid[2], SIGQUIT);
     for (size_t i = 0; i < 3; ++i) {
         pthread_join(tid[i], NULL);
     }
