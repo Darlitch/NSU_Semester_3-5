@@ -13,7 +13,7 @@
 #define PAGE 4096
 #define STACK_SIZE 3 * PAGE
 
-void *create_stack(off_t size, int mytid) {
+void *create_stack(off_t size, int mytid, mythread_t* thread) {
     // char stack_file[128];
     // int fd;
     void *stack;
@@ -22,6 +22,9 @@ void *create_stack(off_t size, int mytid) {
     // ftruncate(fd, 0);
     // ftruncate(fd, size);
     stack = mmap(NULL, size, PROT_NONE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_STACK, -1, 0);
+    mprotect(stack + PAGE, STACK_SIZE - PAGE, PROT_READ | PROT_WRITE);
+    *thread = (mythread_t)(stack + STACK_SIZE - sizeof(mythread_struct_t));
+    stack = (void *)*thread;
     // close(fd);
     return stack;
 }
@@ -46,12 +49,12 @@ int mypthread_create(mythread_t *thread, void *(*start_routine)(void *), void *a
     mytid++;
 
     printf("mythread_create: Creating pthread %d\n", mytid);
-    child_stack = create_stack(STACK_SIZE, mytid);
-    mprotect(child_stack + PAGE, STACK_SIZE - PAGE, PROT_READ | PROT_WRITE);
+    child_stack = create_stack(STACK_SIZE, mytid, &thr);
+    // mprotect(child_stack + PAGE, STACK_SIZE - PAGE, PROT_READ | PROT_WRITE);
 
     // memset(child_stack + PAGE, 0x7f, STACK_SIZE - PAGE);
 
-    thr = (mythread_t)(child_stack + STACK_SIZE - sizeof(mythread_struct_t));
+    // thr = (mythread_t)(child_stack + STACK_SIZE - sizeof(mythread_struct_t));
     thr->mytid = mytid;
     thr->arg = arg;
     thr->start_routine = start_routine;
@@ -59,7 +62,7 @@ int mypthread_create(mythread_t *thread, void *(*start_routine)(void *), void *a
     thr->finished = 0;
     thr->joined = 0;
 
-    child_stack = (void *)thr;
+    // child_stack = (void *)thr;
 
     printf("child stack: %p;  mythread: %p\n", child_stack, thr);
     child_pid = clone(thread_startup, child_stack, CLONE_VM | CLONE_FILES | CLONE_THREAD | CLONE_FS | CLONE_SIGHAND, thr);
