@@ -6,9 +6,9 @@ import java.io.*;
 import java.net.Socket;
 
 public class FTClient {
-    private String filepath;
-    private int port;
-    private String serverAddr;
+    private final String filepath;
+    private final int port;
+    private final String serverAddr;
     public FTClient(String[] args) {
         InputChecker.check(args);
         filepath = args[0];

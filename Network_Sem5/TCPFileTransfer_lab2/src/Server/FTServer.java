@@ -1,18 +1,16 @@
 package Server;
 
 import Exceptions.ConnectionException;
-import Exceptions.FileTransferException;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class FTServer {
     private final int timeout = 3000;
-    private final String upload_dir = "R:\\SecondCourse\\Network_Sem5\\TCPFileTransfer_lab2\\src\\filesForTest\\upload";
+    private final String upload_dir = "C:\\SecondCourse\\Network_Sem5\\TCPFileTransfer_lab2\\src\\filesForTest\\upload";
     private ServerSocket serverSocket;
     private final ExecutorService threadPool;
 

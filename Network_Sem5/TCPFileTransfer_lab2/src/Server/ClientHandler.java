@@ -29,15 +29,7 @@ public class ClientHandler {
     private static void getFile(DataInputStream in, DataOutputStream out, String uploadDir, int timeout) {
         String filename = getFilename(in);
         long fileSize = getFileSize(in);
-//        File directory = new File(uploadDir);
-//        if (!directory.exists()) {
-//            boolean created = directory.mkdirs();
-//            if (!created) {
-//                throw new FileTransferException("Failed to create directory: " + uploadDir);
-//            }
-//        }
         File file = new File(uploadDir, filename);
-        System.out.println(uploadDir + ":" + filename);
         try (FileOutputStream fileOut = new FileOutputStream(file)) {
             getFileData(in, fileOut, fileSize, timeout, filename);
         } catch (IOException e) {
