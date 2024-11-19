@@ -9,6 +9,9 @@ import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
+import opentrip.FeatureData;
+import opentrip.Properties;
+import openweather.WeatherData;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -16,9 +19,9 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ViewModel {
-    private static int MAX_PLACE_QUANTITY = 5;
-    private OkHttpClient client;
-    private APIController apiController;
+    private static final int MAX_PLACE_QUANTITY = 5;
+    private final OkHttpClient client;
+    private final APIController apiController;
     private Button searchButton;
     private ListView<String> resultList;
 
@@ -110,7 +113,66 @@ public class ViewModel {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String responseString = response.body().string();
-                    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    String weather = WeatherData.parseJSON(responseString);
+                    futures.getFirst().complete(weather);
+                } else {
+                    futures.getFirst().complete("Get Weather response failed: " + response.code());
+                }
+            }
+        };
+        apiController.getWeatherByCoordinates(location.getLat(), location.getLng(), weatherCallback);
+
+        Callback placesCallback = new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+                Platform.runLater(() ->{
+                    resultList.getItems().add("Get interesting places failed");
+                    searchButton.setDisable(false);
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseString = response.body().string();
+                    List<Properties> places = FeatureData.parseJSON(responseString);
+                    futures.add(new CompletableFuture<>());
+                    futures.get(1).complete("Interesting places:");
+
+                    int placeCount = 0;
+                    for (Properties place : places) {
+                        if (place.getName() != null && !place.getName().isEmpty()) {
+                            CompletableFuture<String> future = new CompletableFuture<>();
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+                            if (placeCount >= MAX_PLACE_QUANTITY) {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    Platform.runLater(() ->{
+                        resultList.getItems().add("Get interesting places failed");
+                        searchButton.setDisable(false);
+                    });
+                }
+            }
+        };
+    }
+
+    private void handlePlaceInfo(Properties place, CompletableFuture<String> future) {
+        Callback placeCallback = new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                throw new ViewModelException("Get place info failed", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseString = response.body().string();
+                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 }
             }
         };
