@@ -11,12 +11,14 @@ import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import opentrip.FeatureData;
 import opentrip.Properties;
+import opentripinfo.FeatureInfoData;
 import openweather.WeatherData;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 public class ViewModel {
     private static final int MAX_PLACE_QUANTITY = 5;
@@ -139,18 +141,36 @@ public class ViewModel {
                     List<Properties> places = FeatureData.parseJSON(responseString);
                     futures.add(new CompletableFuture<>());
                     futures.get(1).complete("Interesting places:");
+//                    futures.get(0).complete("Interesting places:");
 
                     int placeCount = 0;
                     for (Properties place : places) {
                         if (place.getName() != null && !place.getName().isEmpty()) {
                             CompletableFuture<String> future = new CompletableFuture<>();
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+                            handlePlaceInfo(place, future);
+                            futures.add(future);
+                            placeCount++;
                             if (placeCount >= MAX_PLACE_QUANTITY) {
                                 break;
                             }
                         }
                     }
+
+                    CompletableFuture<Void> allOf = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+                    allOf.thenAccept(voidResult -> {
+                        for (CompletableFuture<String> future : futures) {
+                            try {
+                                String text = future.get();
+                                Platform.runLater(() -> resultList.getItems().add(text));
+                            } catch (ExecutionException | InterruptedException e) {
+                                Platform.runLater(() -> {
+                                    resultList.getItems().clear();
+                                    resultList.getItems().add("Get interesting places failed");
+                                });
+                            }
+                        }
+                        searchButton.setDisable(false);
+                    });
                 } else {
                     Platform.runLater(() ->{
                         resultList.getItems().add("Get interesting places failed");
@@ -159,6 +179,10 @@ public class ViewModel {
                 }
             }
         };
+        apiController.getInterestingPlacesByCoordinates(
+                location.getLng() - 0.01, location.getLng() + 0.01,
+                location.getLat() - 0.01, location.getLat() + 0.01,
+                placesCallback);
     }
 
     private void handlePlaceInfo(Properties place, CompletableFuture<String> future) {
@@ -172,9 +196,13 @@ public class ViewModel {
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     String responseString = response.body().string();
-                    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    String placeInfo = FeatureInfoData.parseJSON(responseString);
+                    future.complete(placeInfo);
+                } else {
+                    throw new ViewModelException("Get place info failed: " + response.code());
                 }
             }
         };
+        apiController.getInfoAboutPlace(place.getXid(), placeCallback);
     }
 }

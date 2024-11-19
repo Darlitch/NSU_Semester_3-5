@@ -26,7 +26,8 @@ public class WeatherData {
         try {
             ObjectMapper mapper = new ObjectMapper();
             WeatherData weatherData = mapper.readValue(str, WeatherData.class);
-            return weatherData.getWeather().getFirst().getMain() + " " + weatherData.getWeather().getFirst().getDescription();
+            String res = String.valueOf(weatherData.getMain().getTemp()) + "  " + String.valueOf(weatherData.getMain().getFeels_like()) + "  ";
+            return  res + weatherData.getWeather().getFirst().getMain() + " " + weatherData.getWeather().getFirst().getDescription();
         } catch (JsonProcessingException e) {
             throw new WeatherDataException("Parse JSON failed", e);
         }

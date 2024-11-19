@@ -11,8 +11,8 @@ public class APIController {
     private static final String GRAPHHOPPER_API_KEY = "04a9c8ba-db4f-4131-82d5-8c0d8d22bbc5";
 
     private static final String GRAPHHOPPER_API_URL = "https://graphhopper.com/api/1/geocode?q={ADDRESS}&locale=ru&key={API_KEY}";
-    private static final String OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lng={LNG}&appid={API_KEY}";
-    private static final String OPENTRIP_API_URL = "https://api.opentripmap.com/0.1/ru/places/bbox?lng_min={LNG_MIN}&lat_min={LAT_MIN}&lng_max={LNG_MAX}&lat_max={LAT_MAX}&format=geojson&apikey={API_KEY}";
+    private static final String OPENWEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LNG}&appid={API_KEY}";
+    private static final String OPENTRIP_API_URL = "https://api.opentripmap.com/0.1/ru/places/bbox?lon_min={LNG_MIN}&lat_min={LAT_MIN}&lon_max={LNG_MAX}&lat_max={LAT_MAX}&format=geojson&apikey={API_KEY}";
     private static final String OPENTRIP_INFO_API_URL = "https://api.opentripmap.com/0.1/ru/places/xid/{XID}?apikey={API_KEY}";
     private OkHttpClient client;
 
@@ -27,8 +27,8 @@ public class APIController {
 
     public void getLocationsByAddress(String address, Callback callback) {
         String apiUrl = GRAPHHOPPER_API_URL
-                .replace("{ADDRESS}", URLEncoder.encode(address, StandardCharsets.UTF_8)
-                .replace("{API_KEY}", GRAPHHOPPER_API_KEY));
+                .replace("{ADDRESS}", URLEncoder.encode(address, StandardCharsets.UTF_8))
+                .replace("{API_KEY}", GRAPHHOPPER_API_KEY);
         System.out.println("GraphHopper Url: " + apiUrl);
         sendGetRequest(apiUrl, callback);
     }
