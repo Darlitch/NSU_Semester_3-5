@@ -13,6 +13,7 @@
 #define STACK_SIZE PAGE * 2
 
 uthread_t *uthreads[MAX_THREADS];
+// static ucontext_t mainContext;
 size_t uthread_count = 0;
 size_t uthread_cur = 0;
 
@@ -52,6 +53,7 @@ void thread_startup(void) {
             printf("thread_start: i=%ld thread_func: %p; arg: %p\n",
                 i, uthreads[i]->thread_func, uthreads[i]->arg);
             uthreads[i]->thread_func(uthreads[i]->arg);
+            schedule();
         }
     }
 }
@@ -69,11 +71,17 @@ int uthread_create(uthread_t* thread, void (*start_routine), void *arg) {
 
     new_ut->thread_func = start_routine;
     new_ut->arg = arg;
+    new_ut->finished = 0;
     uthreads[uthread_count] = new_ut;
     uthread_count++;
     thread = new_ut;
     return 0;
 }
+
+// void uthreads_run() {
+//     swapcontext(&mainContext, &(uthreads[0]->uctx));
+
+// }
 
 void *mythread(void *arg) {
     char* str = (char *)arg;
@@ -89,7 +97,6 @@ void *mythread(void *arg) {
 }
 
 
-
 int main() {
     uthread_t ut[3];
     char *arg[] = {"11111111", "222222222", "3333333"};
@@ -102,6 +109,9 @@ int main() {
     for (size_t i = 0; i < 3; ++i) {
         uthread_create(&ut[i], mythread, (void *)arg[i]);
     }
+    // while (1) {
+    //     uthreads_run();
+    // }
     while(1) {
         schedule();
     }
