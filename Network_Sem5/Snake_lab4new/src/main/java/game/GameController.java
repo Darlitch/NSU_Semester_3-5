@@ -16,9 +16,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class GameController {
-    private static final int FOOD_STATIC = 1;
-    private static final int FOOD_PER_PLAYER = 1;
-    private static final int BECOME_FOOD_PERCENT = 100;
 
     private final Map<Integer, SnakesProto.Direction> steerChoices;
 
@@ -157,8 +154,7 @@ public class GameController {
             ));
             eatenFood.ifPresent(food -> {
                 allFoods.remove(food);
-                var player = players.get(snake.getPlayerId());
-                players.put(snake.getPlayerId(), SnakesProto.GamePlayer.newBuilder(player).setScore(player.getScore() + 10).build());
+                players.compute(snake.getPlayerId(), (k, player) -> SnakesProto.GamePlayer.newBuilder(player).setScore(player.getScore() + 10).build());
             });
         }
 

@@ -18,11 +18,10 @@ import java.util.stream.Collectors;
 
 public class PlayersManager {
 
+    @Getter
     @Builder
     private static class PlayerWrapper {
-        @Getter
         private SnakesProto.GamePlayer player;
-        @Getter
         @Setter
         private Long lastSeen;
     }

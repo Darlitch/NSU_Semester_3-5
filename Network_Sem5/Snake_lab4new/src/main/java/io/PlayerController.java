@@ -52,11 +52,6 @@ public class PlayerController {
 
     private volatile SnakesProto.GameState state;
 
-    void setRole(SnakesProto.NodeRole role) {
-        roleLock.lock();
-        this.role = role;
-        roleLock.unlock();
-    }
 
     public PlayerController(String name, int listenPort, SnakesProto.NodeRole role) throws IOException {
         this.listenPort = listenPort;
@@ -323,7 +318,7 @@ public class PlayerController {
                     this.state = state;
                     state.getPlayers().getPlayersList().forEach(gamePlayer -> {
                         var newPlayer = SnakesProto.GamePlayer.newBuilder(gamePlayer);
-                        if (gamePlayer.getIpAddress().length() == 0) {
+                        if (gamePlayer.getIpAddress().isEmpty()) {
                             newPlayer.setIpAddress(msg.getIp());
                         }
                         if (gamePlayer.getId() == myId) {

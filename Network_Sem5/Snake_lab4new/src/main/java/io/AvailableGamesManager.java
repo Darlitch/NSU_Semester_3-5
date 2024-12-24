@@ -51,10 +51,6 @@ public class AvailableGamesManager {
         );
     }
 
-    public Collection<MessageWithSender> getGames() {
-        return games;
-    }
-
     public Collection<MessageWithSender> getAllGames() {
         return allGames.asMap().values();
     }

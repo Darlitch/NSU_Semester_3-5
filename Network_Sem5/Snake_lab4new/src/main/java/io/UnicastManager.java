@@ -75,9 +75,7 @@ public class UnicastManager {
                         var elem = sentList.stream()
                                 .filter(wrapper -> wrapper.getMsgSeq() == gameMessage.getMsgSeq())
                                 .findAny();
-                        if (elem.isPresent()) {
-                            sentList.remove(elem.get());
-                        }
+                        elem.ifPresent(sentList::remove);
                     }
                 } else {
                     var ackData = GameMessage.newBuilder()
