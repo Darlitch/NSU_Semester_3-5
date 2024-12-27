@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 public class AvailableGamesManager {
     private final Queue<MessageWithSender> games = EvictingQueue.create(5);
-    private final Cache<PlayerSignature, MessageWithSender> allGames = CacheBuilder.newBuilder().maximumSize(10000).expireAfterWrite(1000, TimeUnit.MILLISECONDS).build();
+    private final Cache<PlayerSignature, MessageWithSender> allGames = CacheBuilder.newBuilder().maximumSize(10000).expireAfterWrite(3000, TimeUnit.MILLISECONDS).build();
     private final Thread gamesListenerWorkerThread;
     private final MulticastManager multicastManager;
 

@@ -181,9 +181,12 @@ public class PlayerController {
         if (role == SnakesProto.NodeRole.DEPUTY) {
             if (deadPlayer.getRole() == SnakesProto.NodeRole.MASTER) {
                 roleLock.lock();
-                role = SnakesProto.NodeRole.MASTER;
-                roleSubject.onNext(role);
-                roleLock.unlock();
+                try {
+                    role = SnakesProto.NodeRole.MASTER;
+                    roleSubject.onNext(role);
+                } finally {
+                    roleLock.unlock();
+                }
                 playersManager.changeRole(myId, SnakesProto.NodeRole.MASTER);
                 boolean hasDeputy = false;
                 for (var player : playersManager.getPlayers()) {
@@ -348,9 +351,7 @@ public class PlayerController {
         }
     }
 
-    private void listenMulticastWorker() {
-
-    }
+    private void listenMulticastWorker() {}
 
     public void sendGameStateWorker() {
         while (true) {
