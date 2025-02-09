@@ -1,0 +1,10 @@
+import runtime;
+
+main() {
+    arr: [int] = [1, 2, 3];
+    println(sum(arr));
+}
+
+sum(arr: [int]) -> int {
+    fold(arr, 0, \acc, i -> acc + i);
+}

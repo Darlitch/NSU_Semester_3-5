@@ -1,0 +1,9 @@
+expr = sum;
+sum = int:l "+" sum:r {Add(:l, :r)} 
+    | mult:e { :e }; 
+mult = int:l "*" mult:r {Mult(:l, :r)} 
+    | int:e { :e }; 
+int = digit+ $d{ IntConst(42) };
+// | ws '(' ws sum:s1 ws ')' ws {Braces:s1};
+digit = '0' - '9';
+ws = " "*;

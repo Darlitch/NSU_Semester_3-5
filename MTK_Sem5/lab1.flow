@@ -1,0 +1,10 @@
+import string;
+
+main() {
+    arr : [int] = [1, 2, 3];
+    println(strGlue(intArr2StrArr(arr), " "));
+}
+
+intArr2StrArr(arr: [int]) -> [string] {
+    map(arr, i2s);
+}

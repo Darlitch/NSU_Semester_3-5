@@ -1,0 +1,25 @@
+import ds/tree;
+
+main() {
+    m : int = 5;
+    a : [int] = [1, 3, 4, 2, 6, 0, 5];
+    println(inds(a, m));
+}
+
+inds(a : [int], m : int) -> [Pair<int, int>] {
+    tr = foldi(a, makeTree(), \i, tree, a_i -> 
+        treePushToArrayValue(tree, a_i, i)
+    );
+
+    // foldi(a, [], \i, acc, a_i -> {
+    //     switch(lookupTree(tr, m-a_i)) {
+    //         Some(val): concat(acc, map(val, \j -> Pair(i, j)));
+    //         None(): concat(acc, map([], \j -> Pair(i, j)));
+    //     }
+    // })
+
+    foldi(a, [], \i, acc, a_i -> {
+        concat(acc, map(getTreeArrayValue(tr, m-a_i), \j -> Pair(i,j)));
+
+    })
+}

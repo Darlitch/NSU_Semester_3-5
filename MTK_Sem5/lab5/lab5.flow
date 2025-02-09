@@ -1,0 +1,24 @@
+import string;
+import lingo/pegcode/driver;
+// import grammar;
+    Expr ::= IntConst, Add, Mult;
+    Add(l : Expr, r : Expr);
+    Mult : (l : Expr, r : Expr);
+    IntConst(i : int);
+
+Calculate(e : Expr) -> int {
+    switch(e) {
+        Add(l,r) : Calculate(l) + Calculate(r);
+        Mult(l,r) : Calculate(l) + Calculate(r);
+        IntConst(i) : i;
+    }
+}
+
+AstParse(s : string) -> Expr {
+    parsic(compilePegGrammar("#include labs/lab5/grammar.lingo"), s, defaultPegActions);
+}
+
+main() {
+    var = "2";
+    println(Calculate(AstParse(var)));
+}

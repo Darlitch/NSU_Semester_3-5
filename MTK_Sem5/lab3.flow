@@ -1,0 +1,30 @@
+import runtime;
+import ds/array;
+
+main() {
+    n : int = 6;
+    println(fib(n));
+}
+
+fib(n : int) -> [int] {
+    
+    arr: [int] = [];
+    fibR(n, arr);
+}
+
+fibR (n : int, part: [int]) -> [int] {
+    len = length(part);
+    if (len == n) {
+        part;
+    }
+    else if (len == 0) {
+        fibR(n, arrayPush(part, 0));
+    }
+    else if (len == 1) {
+        fibR(n, arrayPush(part, 1));
+    }
+    else {
+        // arrayPush(part, part[len-2] + part[len-3]);
+        fibR(n, arrayPush(part, part[len-1] + part[len-2]));
+    }
+}
